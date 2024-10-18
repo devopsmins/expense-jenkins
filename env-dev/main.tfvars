@@ -34,3 +34,51 @@ frontend = {
   instance_count = 1
   instance_type  = "t3.small"
 }
+bastion_cidrs = ["172.31.46.160/32"]
+prometheous_cidrs = ["172.31.46.200/32"]
+
+public_alb = {
+  internal     = false
+  lb_port      = 80
+  type         = "public"
+  component    = "frontend"
+  enable_https = true
+  ingress = {
+    http  = { port = 80 }
+    https = { port = 443 }
+  }
+}
+
+public_alb = {
+  internal = false
+  lb_port  = 80
+  type     = "public"
+  component = "frontend"
+  enable_https = true
+  ingress = {
+    http = { port = 80 }
+    https = { port = 44 }
+  }
+}
+
+backend_alb = {
+  internal  = true
+  lb_port   = 80
+  type      = "backend"
+  component = "backend"
+  enable_https = false
+  ingress = {
+    http = { port = 80 }
+  }
+
+}
+
+route53_zone_id = "Z05815251wqO0ok50UPQR"
+kms             = "arn:aws:kms:us-east-1:827956817277:key/42af000f-94d6-4913-a952-14877c37a92e"
+certificate_arn = "arn:aws:acm:us-east-1:827956817277:certificate/3841c970-14da-4ec8-84d4-4f62d433c424"
+
+
+
+
+
+
