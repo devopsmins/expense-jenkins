@@ -7,7 +7,12 @@ pipeline {
     ansiColor('xterm')
   }
 
- stages {
+  stages {
    stage( 'Apply' ) {
      steps {
-       sh
+       sh 'terraform int'
+       sh 'terraform apply -auto-approve'
+     }
+   }
+  }
+}
