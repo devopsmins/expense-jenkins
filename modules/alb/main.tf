@@ -25,6 +25,7 @@ resource "aws_security_group" "main" {
   }
   tags = merge(var.tags, { Name = "${var.env}-${var.component}" })
 
+
 }
 
 resource "aws_lb" "main" {
@@ -34,6 +35,24 @@ resource "aws_lb" "main" {
   security_groups   = [aws_security_group.main.id]
   subnets           = var.subnets
   tags              = merge(var.tags, { Name = "${var.env}-${var.type}-alb" })
+}
+
+resource "aws_lb_listener" "main"
+
+
+
+
+
+resource "aws_lb_listener" "main" {
+  count             = var.enable_https ? 0 : 1
+  load_balancer_arn = aws_lb.main.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = var.target_group_arn
+  }
 }
 
 
