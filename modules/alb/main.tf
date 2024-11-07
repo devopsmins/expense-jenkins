@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.54.1"
+    }
+  }
+}
 resource "aws_security_group" "main" {
   name = "${var.env}-${var.type}-alb"
   description = "${var.env}-${var.type}-alb"
@@ -25,23 +33,25 @@ resource "aws_security_group" "main" {
   }
   tags = merge(var.tags, { Name = "${var.env}-${var.component}" })
 
+}
 
+resource "aws_lb" "main" {
+  name = "${var.env}-${var.component}"
+  internal = var.internal
+  load_balancer_type = "application"
+  security_groups = [aws_security_group.main.id]
+  subnets = var.subnets
+  tags = merge(var.tags, { Name = "${var.env}-${var.component}"})
 }
 
 resource "aws_lb" "main" {
   name              = "${var.env}-${var.type}"
   internal          = var.internal
-  load_balance_type = "application"
+  load_balancer_type = "application"
   security_groups   = [aws_security_group.main.id]
   subnets           = var.subnets
   tags              = merge(var.tags, { Name = "${var.env}-${var.type}-alb" })
 }
-
-resource "aws_lb_listener" "main"
-
-
-
-
 
 resource "aws_lb_listener" "main" {
   count             = var.enable_https ? 0 : 1
@@ -51,7 +61,7 @@ resource "aws_lb_listener" "main" {
 
   default_action {
     type             = "forward"
-    target_group_arn = var.target_group_arn
+    target_group_arn = [var.target_group_arn]
   }
 }
 resource "aws_lb_listener" "https" {
@@ -68,20 +78,3 @@ resource "aws_lb_listener" "https" {
     target_group_arn = var.target_group_arn
   }
 }
-
-resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.mian.arn
-  count             = var.enable_https ? 1 : 0
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certicate_arn     = var.certificate_arn
-
-}
-
-
-
-
-
-
-
