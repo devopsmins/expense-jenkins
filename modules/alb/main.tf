@@ -53,6 +53,7 @@ resource "aws_lb" "main" {
   tags              = merge(var.tags, { Name = "${var.env}-${var.type}-alb" })
 }
 
+
 resource "aws_lb_listener" "main" {
   count             = var.enable_https ? 0 : 1
   load_balancer_arn = aws_lb.main.arn
