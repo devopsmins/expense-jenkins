@@ -7,3 +7,6 @@ variable "bastion_cidrs" {}
 variable "prometheus_cidrs" {}
 variable "tags" {}
 variable "instance_type" {}
+variable "instance_count" {}
+variable "subnets" {}
+variable "kms" {}
